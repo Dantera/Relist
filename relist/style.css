@@ -1,0 +1,101 @@
+
+#relist .highlight {
+    background-color: #a3ff00; /* high visibility green for highlighting matching text in searches */
+}
+
+#relist .table > tbody > tr > th { /* override bootstrap table data text vertical alignment */
+    vertical-align: middle!important;
+}
+
+/* FROM CCPP */
+
+
+.relist-table .highlight {
+    background-color: #a3ff00; /* high visibility green for highlighting matching text in searches */
+    background-color: var(--highlight);
+}
+
+.relist-table .material-icons {
+    vertical-align: bottom;
+    cursor: pointer;
+    color: ghostwhite;
+}
+
+.pagination-metrics {
+    margin-bottom: 8px;
+}
+
+.pagination-metrics .input-group {
+    padding-left: 25%;
+}
+
+.pagination-metrics label i {
+    margin-right: 8px!important;
+}
+
+.pagination-metrics input {
+    /*margin: auto;*/
+    max-width: 300px;
+}
+
+/*
+.pagination-metrics input[type=search]::-webkit-search-cancel-button {
+    -webkit-appearance: searchfield-cancel-button;
+}
+*/
+
+/*
+.pagination-metrics .material-icons,
+.pagination-metrics .material-icons-outlined {
+    vertical-align: middle;
+    margin-right: 8px;
+}
+*/
+
+.pagination-nav {
+    margin: auto;
+}
+
+.pagination-nav-metric {
+    display: inline-block;
+    /*vertical-align: super;*/
+}
+
+.pagination-nav button {
+    vertical-align: bottom;
+}
+
+.pagination-nav button .material-icons {
+    font-size: 2.2em;
+    /*
+    vertical-align: baseline;
+    */
+    color: whitesmoke;
+    /*
+    cursor: pointer;
+    background-color: blue;
+    border: 2px solid black;
+    border-radius: 8px;
+    box-shadow: 2px 2px rgba(0, 0, 0, 0.5);
+    padding: 2px;
+    */
+}
+
+.pagination-nav-metric, .pagination-nav .material-icons {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.relist-table tbody tr:hover td {
+    background-color: #EBF5FB !important;
+}
+
+.pagination-nav button:first-child {
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
+}
+
+.pagination-nav button:last-child {
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+}

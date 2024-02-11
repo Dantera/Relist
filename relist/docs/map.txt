@@ -1,0 +1,10 @@
+
+key:data-type
+----------
+boolean visible: if the field is visible as a table column
+boolean sort: if the field is sortable
+boolean filter: if the field is to use a filter
+boolean active: if the field is the one chosen for the primary sort field
+string type: the field data type
+string key: the field key for the object/array
+string display: the field column header display name

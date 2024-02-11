@@ -1,0 +1,267 @@
+﻿
+@using GesWebApp.Models;
+@using Newtonsoft.Json;
+
+@model List<GesWebApp.Models.ExpenseEntry.Job>
+
+@{
+    ViewBag.Title = "Jobs Takedown";
+}
+
+<style>
+    .highlight {
+        background-color: #a3ff00; /* high visibility green for highlighting matching text in searches */
+    }
+</style>
+
+<script>
+
+    const DATA_MAP = [
+        { visible: true, sort: false, filter: true, active: true, type: 'string', key: '_strJobNumber', display: 'Job #' },
+        { visible: true, sort: false, filter: true, active: true, type: 'string', key: '_strJobName', display: 'Job Name' },
+        { visible: true, sort: false, filter: true, active: true, type: 'string', key: '_strCustomerName', display: 'Customer Name' },
+    ];
+
+    const DATASET = @Html.Raw(JsonConvert.SerializeObject(Model));
+</script>
+<script src="~/Scripts/lib/vue.global.js"></script>
+<!--
+    vue script
+    relist scripts
+    
+-->
+
+<h2>Jobs Takedown <span class="text-danger">DEMO</span></h2>
+
+<hr />
+
+<div id="app">
+    <!--
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Jobs: {{ records.modified.length }}</h3>
+        </div>
+        <div class="col-md-6 text-right">
+            <button
+                class="btn btn-primary"
+                v-on:click="markRecords()"
+            >Mark selected jobs for takedown
+            </button>
+        </div>
+    </div>
+    -->
+
+    <div class="row">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button id="searchButton" class="btn btn-default">Search</button>
+            </span>
+            <input id="searchBox" type="text" class="form-control pull-left" placeholder="Search" v-model="filter.master" v-on:keyup="filterRecords()">
+            <span class="input-group-btn pull-left">
+                <button id="clearButton" class="btn btn-default" v-on:click="clearSearch()">Clear</button>
+            </span>
+        </div>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-6">
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Job #</th>
+                        <th>Job Name</th>
+                        <th>Customer</th>
+                        <th class="text-right">
+                            <button v-bind:disabled="records.selected.length == 0" class="btn btn-primary" v-on:click="clearRecords()">Clear All</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(record, index) in records.modified"
+                        v-bind:class="{ 'warning' : record.added }">
+                        <td>{{ index + 1 }}</td>
+                        <td v-html="record._strJobNumber"></td>
+                        <td v-html="record._strJobName"></td>
+                        <td v-html="record._strCustomerName"></td>
+                        <td class="text-right">
+                            <input type="checkbox"
+                                v-model="record.added"
+                                v-on:click="toggleRecord(record.strJobNumber)" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th>Job #</th>
+                        <th>Job Name</th>
+                        <th>Customer Name</th>
+                        <th class="text-right">
+                            <button class="btn btn-success" v-bind:disabled="records.selected.length == 0" v-on:click="takedownRecords()">Takedown</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(record, index) in records.selected">
+                        <td v-html="record.strJobNumber"></td>
+                        <td v-html="record.strJobName"></td>
+                        <td v-html="record.strCustomerName"></td>
+                        <td class="text-right">
+                            <a class="text-danger" v-on:click="removeRecordFromList(record.strJobNumber)">Remove</a>
+                            <!--
+                                <button
+                                class="btn btn-danger text-light"
+                                v-on:click="removeRecordFromList(record.strJobNumber)"
+                            >Remove</button>
+                            -->
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+@*
+<div id="app">
+    
+    <!--
+    <div class="row">
+
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button id="searchButton" class="btn btn-default">Search</button>
+            </span>
+            <input id="searchBox" type="text" class="form-control" placeholder="Search">
+            Jobs: {{ records.modified.length }}
+        </div>
+
+    </div>
+    -->
+
+    <div class="row">
+        <div class="col-md-6">
+
+
+
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr class="header">
+                        <th></th>
+                        <th>Job #</th>
+                        <th>Job Name</th>
+                        <th>Customer</th>
+                        <th class="text-right">
+                            <button class="btn btn-success">Add All</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="(record, index) in records.modified"
+                        v-bind:class="{ 'danger' : record.added }"
+                    >
+                        <td>{{ index + 1 }}</td>
+                        <td>{{ record.strJobNumber }}</td>
+                        <td>{{ record.strJobName }}</td>
+                        <td>{{ record.strCustomerName }}</td>
+                        <td class="text-right">
+                            <button class="btn btn-success text-light"
+                                    v-on:click="addRecordToList(record.strJobNumber)"
+                                    v-bind:disabled="record.added">
+                                Add
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <div class="col-md-1 text-center">
+            <button class="btn btn-primary"
+                    v-on:click="markRecords()"
+                    v-bind:disabled="selectedRecords.length == 0"
+            >Mark</button><br />
+            <h3>Jobs</h3>
+            {{ records.selected.length }} / {{ records.modified.length }}<br />
+            <!--
+    <br />
+
+    <button class="btn btn-warning"
+            v-on:click="clearRecords()">
+        Clear List
+    </button>
+    -->
+        </div>
+
+        <div class="col-md-4">
+            
+            <!--
+            <div class="col-md-6">
+                <button class="btn btn-primary"
+                        v-on:click="markRecords()">
+                    Mark
+                </button>
+            </div>
+            <div class="col-md-6 text-right">
+                <button class="btn btn-warning"
+                        v-on:click="clearRecords()">
+                    Clear List
+                </button>
+            </div>
+            -->
+
+            <table class="table table-condensed table-striped">
+                <thead>
+                    <tr class="header">
+                        <th>
+                            <input type="checkbox"
+                                v-model="selectAll"
+                                v-on:change="toggleAllMark(selectedRecords, selectAll)" />
+                        </th>
+                        <th>Job #</th>
+                        <th class="text-right">
+                            <button class="btn btn-warning"
+                                    v-on:click="clearRecords()"
+                                    v-bind:disabled="selectedRecords.length == 0"
+                            >Clear List</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(record, index) in selectedRecords">
+                        <td>
+                            <input type="checkbox"
+                                    v-model="record.bolMarked"
+                                    v-bind:checked="record.marked" />
+                        </td>
+                        <td>{{ record.strJobNumber }}</td>
+                        <td class="text-right">
+                            <button class="btn btn-danger text-light"
+                                    v-on:click="removeRecordFromList(record.strJobNumber)">
+                                Remove
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+*@
+
+<script type="module" src="~/Scripts/takedown/index.js"></script>
